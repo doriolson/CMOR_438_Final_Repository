@@ -1,3 +1,5 @@
+## K Nearest Neighbors
+
 This directory contains example code and notes for the K Nearest Neighbors algorithm
 in supervised learning.
 
