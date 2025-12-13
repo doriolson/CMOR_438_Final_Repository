@@ -119,3 +119,25 @@ def train_pipeline(file_path, target_column):
     evaluate_model(y_test, y_pred)
 
     return model, scaler
+
+
+########################################
+# Here is a graph visualization of the logistic regression
+def plot_probability_distribution(results):
+    """
+    Plot predicted probability distribution.
+    """
+    plt.figure(figsize=(8, 5))
+    sns.histplot(
+        data=results,
+        x="probability",
+        hue="prediction",
+        bins=30,
+        kde=True
+    )
+    plt.xlabel("Predicted Probability")
+    plt.ylabel("Count")
+    plt.title("Logistic Regression Probability Distribution")
+    plt.show()
+
+plot_probability_distribution(results)
