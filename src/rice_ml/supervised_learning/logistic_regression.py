@@ -1,4 +1,4 @@
-# here is the src code for logistic regression
+# This is the src code for logistic regression
 
 
 #first, load in libraries
@@ -21,6 +21,24 @@ from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 
 
+##################################
+# here I am loading in the dataset
+# this will be moved eventually
+# the file path will be "adult.csv"
+# the variable to focus on will be "incomebinary"
+def load_dataset(file_path):
+    df = pd.read_csv(file_path)
+
+    # Clean whitespace
+    df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
+
+    # Encode target variable
+    df["incomebinary"] = df["income"].map({"<=50K": 0, ">50K": 1})
+
+    return df
+
+
+######################################################################
 # Here are the functions that will go into the model training function
 
 
@@ -101,9 +119,8 @@ def train_pipeline(file_path, target_column):
     """
 
     # Load data
-    X, y = load_dataset(file_path, target_column)
-    # the current y value is not formatted to be used for logistic regression, change
-    y = data["gender"].map({"Female": 0, "Male": 1})
+    X = load_dataset(file_path)
+    y = target_column
 
     # Split
     X_train, X_test, y_train, y_test = split_data(X, y)
@@ -141,3 +158,4 @@ def plot_probability_distribution(results):
     plt.show()
 
 plot_probability_distribution(results)
+
