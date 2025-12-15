@@ -14,3 +14,5 @@ My source of information about MLPs is here: https://www.sciencedirect.com/topic
 
 
 As the MLP is a somewhat more complicated version of perceptron, they will be using the same data on adult income. The target variable to test will be a binary measure of adult income, and the other variables in the dataset will be weighted according to the model's specifications. More information about the dataset and use of these variables can be found in the README.md for perceptron and the general supervised learning folder.
+
+The data will be preprocessed by creating a binary varaible of adult income, and then dividing the rest of the variables into numerical and categorical groups. This will help determine the weighting for the remaining variables to see the effect they have on income.

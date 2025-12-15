@@ -4,6 +4,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 from sklearn.model_selection import train_test_split
@@ -132,3 +133,16 @@ def plot_decision_boundary(model, X, y):
     plt.show()
 
 plot_decision_boundary(model, X_test, y_test)
+
+
+# confusion matrix heat map
+def plot_confusion_matrix(model, X_test, y_test):
+    y_pred = model.predict(X_test)
+    cm = confusion_matrix(y_test, y_pred)
+
+    plt.figure(figsize=(5, 4))
+    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")
+    plt.xlabel("Predicted")
+    plt.ylabel("Actual")
+    plt.title("Perceptron Confusion Matrix")
+    plt.show()

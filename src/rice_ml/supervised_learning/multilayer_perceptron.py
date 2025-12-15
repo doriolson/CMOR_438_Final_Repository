@@ -54,8 +54,7 @@ def build_preprocessor():
 
 
 
-########## Training #########
-#  training function
+########## Training Function #########
 def train_mlp(df):
     X = df.drop(columns=["income"])
     y = df["income"]
@@ -84,7 +83,7 @@ def train_mlp(df):
     return pipeline, X_test, y_test
 
 
-# evaluation function
+######### evaluation function ############
 def evaluate_model(model, X_test, y_test):
     y_pred = model.predict(X_test)
 
@@ -102,7 +101,7 @@ def evaluate_model(model, X_test, y_test):
 
 
 
-####### create the model
+########## create the model ###########
 # load in dataset
 df = load_and_prepare_data("adult.csv")
 
