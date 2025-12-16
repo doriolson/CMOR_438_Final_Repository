@@ -141,7 +141,7 @@ def plot_top_coefficients(model, preprocessor, top_n=15):
 
 ######### run code
 
-df = load_data("adult.csv")
+df = pd.read_csv("adult.csv")
 X, y, preprocessor = preprocess_data(df)
 
 model, X_train, X_test, y_train, y_test = train_model(

@@ -142,3 +142,42 @@ def test_train_val_test_split_without_y():
     assert X_tr.shape == (9, 2)
     assert X_va.shape == (3, 2)
     assert X_te.shape == (3, 2)
+    
+
+
+
+
+########################################
+# testing the supervised ML data
+### Testing the data
+import pandas as pd
+df = pd.read_csv("adult.csv")
+
+# Analysis of Dataset Boundaries
+def dataset_boundaries(df):
+    summary = df.describe(include="all").transpose()
+
+    print("\n=== Dataset Boundaries ===")
+    print(summary[["min", "max"]])
+
+    return summary
+
+# Check for rare or invalid values
+def check_invalid_values(df):
+    issues = {}
+
+    issues["negative_age"] = df[df["age"] < 0].shape[0]
+    issues["zero_hours"] = df[df["hours-per-week"] == 0].shape[0]
+    issues["extreme_hours"] = df[df["hours-per-week"] > 100].shape[0]
+    issues["negative_capital_gain"] = df[df["capital-gain"] < 0].shape[0]
+    issues["negative_capital_loss"] = df[df["capital-loss"] < 0].shape[0]
+
+    print("\n=== Invalid / Edge Values ===")
+    for k, v in issues.items():
+        print(f"{k}: {v}")
+
+    return issues
+
+# Dataset tests
+dataset_boundaries(df)
+check_invalid_values(df)

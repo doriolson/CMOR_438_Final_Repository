@@ -550,3 +550,38 @@ def train_val_test_split(
 
     y_train, y_val, y_test = y_arr[train_idx], y_arr[val_idx], y_arr[test_idx]
     return X_train, X_val, X_test, y_train, y_val, y_test
+
+
+
+
+##################################################
+# supervised learning preprocessing functions
+# load data
+def load_data(filepath):
+    df = pd.read_csv(filepath)
+    return df
+
+# preprocess
+def preprocess_data(df):
+    X = df.drop("income", axis=1)
+    y = df["income"].apply(lambda x: 1 if ">50K" in x else 0)
+
+    categorical_features = X.select_dtypes(include=["object"]).columns
+    numerical_features = X.select_dtypes(exclude=["object"]).columns
+
+    numeric_transformer = Pipeline(steps=[
+        ("scaler", StandardScaler())
+    ])
+
+    categorical_transformer = Pipeline(steps=[
+        ("onehot", OneHotEncoder(handle_unknown="ignore"))
+    ])
+
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ("num", numeric_transformer, numerical_features),
+            ("cat", categorical_transformer, categorical_features)
+        ]
+    )
+
+    return X, y, preprocessor
