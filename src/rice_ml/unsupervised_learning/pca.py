@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
-########## Preprocessing Functions (move) #######
+########## Preprocessing Functions (moved to preprocessing.py) #######
 
 # exclude dependent variable
 def get_features(df, target_column="NObeyesdad"):
