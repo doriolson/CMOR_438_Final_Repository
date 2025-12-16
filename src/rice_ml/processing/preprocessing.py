@@ -646,3 +646,51 @@ def build_preprocessor():
     )
 
     return preprocessor
+
+
+
+##################################################
+############# Unsupervised Learning ###############
+
+
+### K means clustering
+
+# drop the NObeyesdad column b/c this is unsupervised learning
+def get_features(df, target_column="NObeyesdad"):
+    """
+    Drops target column for unsupervised learning.
+    """
+    X = df.drop(columns=[target_column])
+    return X
+
+
+# sort the remaining variables by type
+def get_feature_types():
+    """
+    Returns numerical and categorical feature lists.
+    """
+    numerical_features = [
+        "Age", "Height", "Weight", "FCVC", "NCP",
+        "CH2O", "FAF", "TUE"
+    ]
+
+    categorical_features = [
+        "Gender", "CALC", "FAVC", "SCC", "SMOKE",
+        "family_history_with_overweight", "CAEC", "MTRANS"
+    ]
+
+    return numerical_features, categorical_features
+
+
+#preprocess function
+def create_preprocessor(numerical_features, categorical_features):
+    """
+    Creates a preprocessing pipeline with scaling and encoding.
+    """
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ("num", StandardScaler(), numerical_features),
+            ("cat", OneHotEncoder(drop="first"), categorical_features)
+        ]
+    )
+    return preprocessor

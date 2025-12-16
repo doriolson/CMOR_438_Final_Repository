@@ -4,9 +4,19 @@ This directory contains example code and notes for the Regression Trees algorith
 
 ## Algorithm
 
-Regression trees are the more complicated type of decision tree that are  used to make predictions. These trees create a flow chart (the tree) of various variables and outputs within the data until it thinks it can determine the correct answer of the binary income variable. After the algorithm follows an observation through the tree, it makes a prediction on the observation's income status based on the responses, assuming that those who have the same answers for all of the questions above will likely have the same income status. 
+Regression trees are the more complicated type of decision tree that are  used to make predictions. These trees create a flow chart (the tree) of various variables and outputs within the data until it thinks it can determine the correct answer of the binary income variable. This means that the model learns how to follow if-then decision rules. After the algorithm follows an observation through the tree, it makes a prediction on the observation's income status based on the responses, assuming that those who have the same answers for all of the questions above will likely have the same income status. 
 
-This algorithm assumes that observations will cluster themselves into similar groups, and that a group with the same responses for variables other than income will likely also have the same response for the income variable.
+This algorithm assumes that observations will cluster themselves into similar groups, and that a group with the same responses for variables other than income will likely also have the same response for the income variable. The similar characteristics are determined via mean target values, which are calculated via mean square errors.
+
+At each node or decision point in the tree, the algorithm:
+- Evaluates all the possible decisions across all of the features
+- Selects the branch that minimizes prediction error
+- Recursively repeats the process on the "child" nodes
+
+The algorithm stops when: 
+- The set maximum number of levels is reached
+- Each leaf has the set minimum number of samples
+- Splits no longer reduce the predicted error
 
 Information about regression trees from: https://www.youtube.com/watch?v=_wZ1Lo7bhGg
 

@@ -251,3 +251,74 @@ def test_extreme_values():
 
 
 test_extreme_values()
+
+
+
+###############################################
+##### Unsupervised learning data test: obesity data set
+
+import numpy as np
+import pandas as pd
+import pytest
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+
+
+# load in data
+repo_root = Path("/Users/doriolson/Desktop/repos/CMOR_438_Final_Repository")
+data_path = Path("../../../Data/unsupervised_ObesityDataSet_raw_and_data_sinthetic.csv")
+
+# load dataset
+df = pd.read_csv(data_path)
+
+
+# test for missing values
+def test_missing_values_handling(df):
+    # Introduce missing values artificially
+    df_missing = df.copy()
+    df_missing.loc[0, "age"] = np.nan
+    df_missing.loc[1, "FAVC"] = np.nan
+    
+    preprocessor = ColumnTransformer([
+        ("num", StandardScaler(), numeric_features),
+        ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_features)
+    ])
+    
+    X = preprocessor.fit_transform(df_missing)
+    
+    assert X.shape[0] == len(df_missing)
+    assert not np.isnan(X).any()
+
+test_missing_values_handling(df)
+
+
+# test for extreme outliers
+def test_extreme_outliers(df):
+    df_outliers = df.copy()
+    df_outliers.loc[0, "weight"] = 1000  # extreme weight
+    df_outliers.loc[1, "height"] = 300   # extreme height
+    
+    preprocessor = Pipeline([
+        ("scale", StandardScaler())
+    ])
+    
+    X_scaled = preprocessor.fit_transform(df_outliers[numeric_features])
+    assert X_scaled.shape[0] == len(df_outliers)
+    assert np.isfinite(X_scaled).all()
+
+test_extreme_outliers(df)
+
+
+# test for if you have a small dataset
+def test_small_dataset(df):
+    df_small = df.head(1)
+    
+    preprocessor = ColumnTransformer([
+        ("num", StandardScaler(), numeric_features),
+        ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_features)
+    ])
+    
+    X = preprocessor.fit_transform(df_small)
+    assert X.shape[0] == 1
+

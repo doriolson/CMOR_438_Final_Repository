@@ -15,7 +15,7 @@ from sklearn.metrics import silhouette_score
 from sklearn.decomposition import PCA
 
 
-######## preprocessing - can be moved#########
+######## preprocessing (moved) #########
 
 # drop the NObeyesdad column b/c this is unsupervised learning
 def get_features(df, target_column="NObeyesdad"):
