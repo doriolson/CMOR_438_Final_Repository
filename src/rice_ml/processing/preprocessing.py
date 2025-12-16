@@ -622,3 +622,27 @@ def build_preprocessor_perceptron():
     )
 
     return preprocessor
+
+
+#### regression trees
+# preprocessing
+def build_preprocessor():
+    numeric_features = [
+        "age", "fnlwgt", "educational-num",
+        "capital-gain", "capital-loss", "hours-per-week"
+    ]
+
+    categorical_features = [
+        "workclass", "education", "marital-status",
+        "occupation", "relationship", "race",
+        "gender", "native-country"
+    ]
+
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ("num", StandardScaler(), numeric_features),
+            ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_features)
+        ]
+    )
+
+    return preprocessor

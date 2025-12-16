@@ -188,12 +188,12 @@ def check_invalid_values(df):
 check_invalid_values(df)
 
 
-#### perceptron preprocessing
-# load data
+# imort more functions from preprocessing
 from rice_ml.processing.preprocessing import (load_and_prepare_data,
                                               build_preprocessor_perceptron)
 from rice_ml.supervised_learning.multilayer_perceptron import train_mlp
 
+# test if the data loads correctly
 def test_load_and_prepare_data():
     X, y, feature_names = load_and_prepare_data(data_path)
 
@@ -204,8 +204,7 @@ def test_load_and_prepare_data():
     assert X.isnull().sum().sum() == 0
 
 
-
-# test preprocessing function
+# test preprocessing function for perceptron
 def test_build_preprocessor_perceptron():
     X, _, _ = load_and_prepare_data("adult.csv")
     preprocessor = build_preprocessor_perceptron(X)
@@ -230,6 +229,8 @@ def test_small_dataset_behavior():
 
     assert model is not None
     
+test_small_dataset_behavior()
+    
 
 # test extreme input values in the data
 def test_extreme_values():
@@ -249,4 +250,4 @@ def test_extreme_values():
     assert len(preds) == len(X_test_extreme)
 
 
-# run the tests
+test_extreme_values()
