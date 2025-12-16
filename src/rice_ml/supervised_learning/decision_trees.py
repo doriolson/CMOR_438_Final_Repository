@@ -1,5 +1,3 @@
-# note from his git: gpt populated empty script (?)
-
 """
 Decision tree classifier implementation for the rice_ml package.
 
@@ -333,3 +331,4 @@ class DecisionTreeClassifier:
                 assert node.right is not None
                 node = node.right
         return node
+    
