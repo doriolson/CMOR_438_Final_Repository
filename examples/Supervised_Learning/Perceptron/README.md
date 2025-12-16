@@ -5,10 +5,15 @@ in supervised learning.
 
 ## Algorithm
 
-
 Perceptron is an algorithm that takes multiple inputs, gives them each certain weights, and then outputs a binary decision based on if the sum of the weighted inputs meets a certain threshhold. This algorithm is the basis for a number of other machine learning processes. Perceptron requires a vector of other variables to use as predictors, the weights that should be given to each of these other variables, (potentially) a bias term, and a threshold for the sum of the values and weights to reach to determine the binary outcome. 
 
-The algorithm will be predicting the income of each person/observation using the remaining 14 variables, weighted by importance level. The model will run tests to determine how each variable should be weighted to help make the most accurate prediction, and then apply these weights given a threshold to the larger data set. Upon this, the models accuracy can be determined.  
+The main inputs or parameters of a perceptron are:
+ - Variable of interest: the binary variable that will be predicted (in this case, income)
+ - Feature vector: the variables that will be used to predict the variable of interest. 
+ - Weight vector: the amount of weight or influence that each of the features has on the variable of interest
+ - Bias term: to control for biases or other influences on the variable of interset that are not related to the features.
+
+The algorithm will be predicting the income of each person/observation using the remaining 14 variables, weighted by importance level. The model will run tests to determine how each variable should be weighted to help make the most accurate prediction, and then apply these weights given a threshold to the larger data set. Upon this, the model's accuracy can be determined.  
 
 Source on the algorithm: https://www.geeksforgeeks.org/machine-learning/understanding-logistic-regression/. 
 

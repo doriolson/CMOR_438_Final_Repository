@@ -11,7 +11,8 @@ The MLP functions very similarly to the perceptron, but on a larger scale. Like 
 Important hyperparameters of multilayer perceptron to quantify include:
  - Input variables to each node, or all of the variables other than income
  - The amount of layers, including the input layer, output layer, and a number of hidden layers in which the algorithm processes
- - The number of neurons, or sets of perception elements, in each layer 
+ - The number of neurons, or sets of perception elements, in each layers
+
 
 My source of information about MLPs is here: https://www.sciencedirect.com/topics/computer-science/multilayer-perceptron. 
 

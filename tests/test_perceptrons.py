@@ -21,6 +21,51 @@ from rice_ml.processing.preprocessing import (build_preprocessor_perceptron)
 from rice_ml.supervised_learning.multilayer_perceptron import (train_mlp,
                                                                evaluate_model,
                                                                plot_precision_recall)
+from rice_ml.supervised_learning.perceptron import (train_perceptron)
+
+
+#### Basic Perceptron tests
+
+# test if the perceptron converges on separable data
+def test_linearly_separable_data():
+    X = np.array([[2, 2], [3, 3], [-2, -2], [-3, -3]])
+    y = np.array([1, 1, 0, 0])
+
+    model = train_perceptron(X, y, max_iter=1000)
+    metrics = evaluate_model(model, X, y)
+
+    assert metrics["accuracy"] == 1.0
+
+test_linearly_separable_data()
+
+
+# test if the model understands what to do given a failure
+def test_xor_limitation():
+    X = np.array([[0,0], [0,1], [1,0], [1,1]])
+    y = np.array([0, 1, 1, 0])
+
+    model = train_perceptron(X, y, max_iter=1000)
+    metrics = evaluate_model(model, X, y)
+
+    assert metrics["accuracy"] < 1.0
+
+test_xor_limitation()
+
+
+# check that the training actually updates weights of variables
+def test_weight_update_occurs():
+    X = np.random.randn(20, 2)
+    y = (X[:, 0] > 0).astype(int)
+
+    model = train_perceptron(X, y, max_iter=50)
+
+    assert np.any(model.coef_ != 0)
+
+test_weight_update_occurs()
+
+
+
+#### Multilayer Perceptron
 
 # test the training model for mlp
 def test_train_mlp():
