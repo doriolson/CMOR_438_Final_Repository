@@ -8,6 +8,8 @@ Regression trees are the more complicated type of decision tree that are  used t
 
 This algorithm assumes that observations will cluster themselves into similar groups, and that a group with the same responses for variables other than income will likely also have the same response for the income variable.
 
+Information about regression trees from: https://www.youtube.com/watch?v=_wZ1Lo7bhGg
+
 
 ## Data
 
