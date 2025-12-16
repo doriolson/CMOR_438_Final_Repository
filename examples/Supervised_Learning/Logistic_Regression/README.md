@@ -16,6 +16,8 @@ This algorithm relies on a few assumptions or parameters:
 
  Most significantly, logistic regression requires one binary variable for their measurement. The dataset is designed to use income as the dependent variable. This means that the model will predict the (categorized) income of the observation based on their answers to all of the other factors in the dataset. 
 
+ Overall, the model was able to distinguish the income of an individual with around 80% accuracy, given all of the other factors. The model found that the variable with the strongest impact on income outcome was capital gain. 
+
 
 More information (and my source for this analysis) can be found here: https://www.geeksforgeeks.org/machine-learning/understanding-logistic-regression/. 
 
