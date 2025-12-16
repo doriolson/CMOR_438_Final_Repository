@@ -16,7 +16,7 @@ from sklearn.decomposition import PCA
 from sklearn.metrics import precision_recall_curve
 
 
-######## Pre-processing (move to preprocessing, same as perceptron)
+######## Pre-processing (moved to preprocessing, same as perceptron)
 # load in data function
 def load_and_prepare_data(file_path):
     df = pd.read_csv(file_path)
@@ -31,7 +31,7 @@ def load_and_prepare_data(file_path):
 
 # preprocessing function
 # preprocessor (same as other)
-def build_preprocessor():
+def build_preprocessor_perceptron():
     numeric_features = [
         "age", "fnlwgt", "educational-num",
         "capital-gain", "capital-loss", "hours-per-week"
@@ -63,7 +63,7 @@ def train_mlp(df):
         X, y, test_size=0.2, random_state=42, stratify=y
     )
 
-    preprocessor = build_preprocessor()
+    preprocessor = build_preprocessor_perceptron()
 
     mlp = MLPClassifier(
         hidden_layer_sizes=(128, 64),

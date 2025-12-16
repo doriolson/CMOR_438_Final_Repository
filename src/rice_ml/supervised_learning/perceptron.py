@@ -33,7 +33,7 @@ def load_and_prepare_data(file_path):
 
 
 # function for preprocessing
-def build_preprocessor():
+def build_preprocessor_perceptron():
     numeric_features = [
         "age", "fnlwgt", "educational-num",
         "capital-gain", "capital-loss", "hours-per-week"
@@ -64,7 +64,7 @@ def train_perceptron(df):
         X, y, test_size=0.2, random_state=42, stratify=y
     )
 
-    preprocessor = build_preprocessor()
+    preprocessor = build_preprocessor_perceptron()
 
     model = Perceptron(
         max_iter=1000,

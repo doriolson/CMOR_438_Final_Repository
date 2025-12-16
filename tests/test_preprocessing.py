@@ -151,7 +151,12 @@ def test_train_val_test_split_without_y():
 # testing the supervised ML data
 ### Testing the data
 import pandas as pd
-df = pd.read_csv("adult.csv")
+
+# set path to find dataset
+repo_root = Path("/Users/doriolson/Desktop/repos/CMOR_438_Final_Repository")
+data_path = Path("../../../Data/adult.csv")
+
+df = pd.read_csv(data_path)
 
 # Analysis of Dataset Boundaries
 def dataset_boundaries(df):
@@ -161,6 +166,8 @@ def dataset_boundaries(df):
     print(summary[["min", "max"]])
 
     return summary
+
+dataset_boundaries(df)
 
 # Check for rare or invalid values
 def check_invalid_values(df):
@@ -178,6 +185,68 @@ def check_invalid_values(df):
 
     return issues
 
-# Dataset tests
-dataset_boundaries(df)
 check_invalid_values(df)
+
+
+#### perceptron preprocessing
+# load data
+from rice_ml.processing.preprocessing import (load_and_prepare_data,
+                                              build_preprocessor_perceptron)
+from rice_ml.supervised_learning.multilayer_perceptron import train_mlp
+
+def test_load_and_prepare_data():
+    X, y, feature_names = load_and_prepare_data(data_path)
+
+    assert isinstance(X, pd.DataFrame)
+    assert isinstance(y, pd.Series)
+    assert len(X) == len(y)
+    assert y.nunique() == 2
+    assert X.isnull().sum().sum() == 0
+
+
+
+# test preprocessing function
+def test_build_preprocessor_perceptron():
+    X, _, _ = load_and_prepare_data("adult.csv")
+    preprocessor = build_preprocessor_perceptron(X)
+
+    assert preprocessor is not None
+    assert hasattr(preprocessor, "fit")
+    assert hasattr(preprocessor, "transform")
+
+
+# test data boundaries to ensure the model can run with a small dataset
+def test_small_dataset_behavior():
+    X, y, _ = load_and_prepare_data("adult.csv")
+
+    X_small = X.iloc[:100]
+    y_small = y.iloc[:100]
+
+    preprocessor = build_preprocessor_perceptron(X_small)
+
+    model, _, _, _ = train_mlp(
+        X_small, y_small, preprocessor, max_iter=20
+    )
+
+    assert model is not None
+    
+
+# test extreme input values in the data
+def test_extreme_values():
+    X, y, _ = load_and_prepare_data("adult.csv")
+    preprocessor = build_preprocessor_perceptron(X)
+
+    model, _, X_test, y_test = train_mlp(
+        X, y, preprocessor, max_iter=20
+    )
+
+    X_test_extreme = X_test.copy()
+    X_test_extreme["age"] = 90
+    X_test_extreme["hours-per-week"] = 1
+    X_test_extreme["capital-gain"] = 1_000_000
+
+    preds = model.predict(X_test_extreme)
+    assert len(preds) == len(X_test_extreme)
+
+
+# run the tests

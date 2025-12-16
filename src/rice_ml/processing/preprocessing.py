@@ -585,3 +585,40 @@ def preprocess_data(df):
     )
 
     return X, y, preprocessor
+
+
+
+########### perceptron and multilayer perceptron
+# load in data function
+def load_and_prepare_data(file_path):
+    df = pd.read_csv(file_path)
+
+    # Remove leading/trailing spaces
+    df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
+
+    # Encode target
+    df["income"] = df["income"].map({"<=50K": 0, ">50K": 1})
+
+    return df
+
+# preprocessing function
+def build_preprocessor_perceptron():
+    numeric_features = [
+        "age", "fnlwgt", "educational-num",
+        "capital-gain", "capital-loss", "hours-per-week"
+    ]
+
+    categorical_features = [
+        "workclass", "education", "marital-status",
+        "occupation", "relationship", "race",
+        "gender", "native-country"
+    ]
+
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ("num", StandardScaler(), numeric_features),
+            ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_features)
+        ]
+    )
+
+    return preprocessor

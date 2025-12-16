@@ -4,8 +4,6 @@ This directory contains example code and notes for the Logistic Regression algor
 
 ## Algorithm
 
-_TODO: Describe the core idea of Logistic Regression, its objective, and key hyperparameters._
-
 Logistic Regression is used to classify or predict the outcome of a binary variable. Rather than a straight line of a linear regression, it uses a sigmoid function (curved line) to more accurately capture the tendencies of the data. 
 
 This algorithm relies on a few assumptions or parameters:
