@@ -1,7 +1,6 @@
 
 ## Examples Folder
 
-
 This is the examples folder, which contains the detailed descriptions and notebooks for all of our machine learning algorithms. The folder is divided into two sections, supervised learning and unsupervised learning.
 
 The supervised machine learning algorithms included in this folder are:
@@ -19,3 +18,6 @@ The supervised machine learning algorithms included in this folder are:
  - DBSCAN
  - K Means Clustering
  - Principal Component Analysis
+
+
+The purpose of the examples folder is to provide a clean, efficient, and easily understandable description of our machine learning algorithms. The code within this folder calls functions that have been created in the src folder. Thus, we can see what the function does and how it supports the model, but we do not get bogged down in all of the details of the code required to support the model. Instead, these files describe how these machine algorithms work with the assistance of functions, tables, evaluations, and visualizations that aid the reader in understanding the importance of the models. 

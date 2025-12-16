@@ -1,7 +1,6 @@
 
 # Tests to run on the logistic regression / supervised learning model
 
-
 # Testing for the data can be found in test_preprocessing.py
 
 # Testing the model:
