@@ -1,4 +1,3 @@
-
 # Here is the source code for k means clustering
 
 # import libraries
@@ -14,50 +13,15 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 from sklearn.decomposition import PCA
 
-
-######## preprocessing (moved) #########
-
-# drop the NObeyesdad column b/c this is unsupervised learning
-def get_features(df, target_column="NObeyesdad"):
-    """
-    Drops target column for unsupervised learning.
-    """
-    X = df.drop(columns=[target_column])
-    return X
-
-
-# sort the remaining variables by type
-def get_feature_types():
-    """
-    Returns numerical and categorical feature lists.
-    """
-    numerical_features = [
-        "Age", "Height", "Weight", "FCVC", "NCP",
-        "CH2O", "FAF", "TUE"
-    ]
-
-    categorical_features = [
-        "Gender", "CALC", "FAVC", "SCC", "SMOKE",
-        "family_history_with_overweight", "CAEC", "MTRANS"
-    ]
-
-    return numerical_features, categorical_features
-
-
-#preprocess function
-def create_preprocessor(numerical_features, categorical_features):
-    """
-    Creates a preprocessing pipeline with scaling and encoding.
-    """
-    preprocessor = ColumnTransformer(
-        transformers=[
-            ("num", StandardScaler(), numerical_features),
-            ("cat", OneHotEncoder(drop="first"), categorical_features)
-        ]
-    )
-    return preprocessor
-
-
+# Import necessary functions for the execution block
+# Note: These are needed if the script is run directly.
+try:
+    from rice_ml.processing.preprocessing import (get_features,
+                                                  get_feature_types,
+                                                  create_preprocessor,
+                                                  load_and_prepare_data) # Assuming this is the loading function
+except ImportError:
+    pass 
 
 
 ################# Functions for Model Training ##################
@@ -72,6 +36,7 @@ def plot_elbow_curve(X_processed, k_range=range(2, 11)):
     inertia = []
 
     for k in k_range:
+        # NOTE: n_init=10 is the default in newer scikit-learn versions
         kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
         kmeans.fit(X_processed)
         inertia.append(kmeans.inertia_)
@@ -81,7 +46,7 @@ def plot_elbow_curve(X_processed, k_range=range(2, 11)):
     plt.xlabel("Number of Clusters (k)")
     plt.ylabel("Inertia")
     plt.title("Elbow Method")
-    plt.show()
+    plt.show() # 
 
 # Silhouette Function Analysis
 def plot_silhouette_scores(X_processed, k_range=range(2, 11)):
@@ -91,6 +56,7 @@ def plot_silhouette_scores(X_processed, k_range=range(2, 11)):
     scores = []
 
     for k in k_range:
+        # n_init=10 is the default in newer scikit-learn versions
         kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
         labels = kmeans.fit_predict(X_processed)
         score = silhouette_score(X_processed, labels)
@@ -102,7 +68,6 @@ def plot_silhouette_scores(X_processed, k_range=range(2, 11)):
     plt.ylabel("Silhouette Score")
     plt.title("Silhouette Score Analysis")
     plt.show()
-
 
 ## actually train the algorithm
 def train_kmeans(preprocessor, X, n_clusters):
@@ -186,46 +151,49 @@ def plot_pca_clusters(X_processed, cluster_labels):
         data=pca_df
     )
     plt.title("K-Means Clusters (PCA Projection)")
-    plt.show()
+    plt.show() # 
 
 
+## Guarded execution block ###
+if __name__ == "__main__":
+    # FIX 1: Corrected relative path for execution from notebook's CWD
+    DATA_FILE = "../../../Data/unsupervised_ObesityDataSet_raw_and_data_sinthetic.csv" 
+    
+    # Load data
+    # FIX 2: Assuming load_and_prepare_data is the correct function
+    df = load_and_prepare_data(DATA_FILE)
 
+    # Prepare features
+    X = get_features(df)
 
-## example / code running
-# Load data
-df = load_data("unsupervised_ObesityDataSet_raw_and_data_sinthetic.csv")
+    # Feature types
+    num_features, cat_features = get_feature_types()
 
-# Prepare features
-X = get_features(df)
+    # Preprocessing
+    preprocessor = create_preprocessor(num_features, cat_features)
 
-# Feature types
-num_features, cat_features = get_feature_types()
+    # Transform data once for evaluation plots
+    X_processed = preprocessor.fit_transform(X)
 
-# Preprocessing
-preprocessor = create_preprocessor(num_features, cat_features)
+    # Model selection
+    plot_elbow_curve(X_processed)
+    plot_silhouette_scores(X_processed)
 
-# Transform data once for evaluation plots
-X_processed = preprocessor.fit_transform(X)
+    # Train final model
+    optimal_k = 4
+    pipeline, clusters = train_kmeans(preprocessor, X, optimal_k)
 
-# Model selection
-plot_elbow_curve(X_processed)
-plot_silhouette_scores(X_processed)
+    # Attach clusters
+    df["Cluster"] = clusters
 
-# Train final model
-optimal_k = 4
-pipeline, clusters = train_kmeans(preprocessor, X, optimal_k)
+    # Evaluation
+    sil_score = evaluate_clustering(X_processed, clusters)
+    print(f"Silhouette Score: {sil_score:.3f}")
 
-# Attach clusters
-df["Cluster"] = clusters
+    # Visualization
+    plot_cluster_distribution(df)
+    plot_pca_clusters(X_processed, clusters)
 
-# Evaluation
-sil_score = evaluate_clustering(X_processed, clusters)
-print(f"Silhouette Score: {sil_score:.3f}")
-
-# Visualization
-plot_cluster_distribution(df)
-plot_pca_clusters(X_processed, clusters)
-
-# Interpretation
-print(cluster_vs_target(df))
-print(cluster_numeric_summary(df, num_features))
+    # Interpretation
+    print(cluster_vs_target(df))
+    print(cluster_numeric_summary(df, num_features))

@@ -99,21 +99,7 @@ def evaluate_model(model, X_test, y_test):
     print(classification_report(y_test, y_pred))
 
 
-
-
-########## create the model ###########
-# load in dataset
-df = load_and_prepare_data("adult.csv")
-
-# train the model
-model, X_test, y_test = train_mlp(df)
-
-# evaluate the model
-evaluate_model(model, X_test, y_test)
-
-
-
-######### visualizations
+######### visualizations ############
 
 # PCA Projection of Learned Representation
 def plot_pca_representation(model, X, y):
@@ -169,7 +155,22 @@ def plot_precision_recall(model, X_test, y_test):
     plt.show()
 
 
-# run the visualizations
-plot_pca_representation(model, X_test, y_test)
-plot_training_loss(model)
-plot_precision_recall(model, X_test, y_test)
+########## create the model and run the script ###########
+
+if __name__ == "__main__":
+    # FIX 1: Corrected relative path for execution from notebook's CWD
+    DATA_FILE = "../../../Data/adult.csv" 
+    
+    # load in dataset
+    df = load_and_prepare_data(DATA_FILE)
+
+    # train the model
+    model, X_test, y_test = train_mlp(df)
+
+    # evaluate the model
+    evaluate_model(model, X_test, y_test)
+
+    # run the visualizations (FIX 2: All execution code is consolidated here)
+    plot_pca_representation(model, X_test, y_test)
+    plot_training_loss(model)
+    plot_precision_recall(model, X_test, y_test)

@@ -22,10 +22,19 @@ train_val_test_split
 """
 # TODO Turn this script into a module
 
-from __future__ import annotations
+from __future__ import annotations # <--- THIS MUST BE THE FIRST EXECUTABLE LINE
 
 from typing import Optional, Sequence, Tuple, Union
 import numpy as np
+
+# Place all standard and external library imports here
+import pandas as pd
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+# You will likely need these if they are used in your functions:
+# from sklearn.metrics import ...
+# from pathlib import Path
 
 __all__ = [
     'ArrayLike',

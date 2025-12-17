@@ -1,51 +1,23 @@
 # import packages
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.decomposition import PCA
 
-import matplotlib.pyplot as plt
-import seaborn as sns
+# Note: Preprocessing functions are imported from the preprocessing module
+try:
+    from rice_ml.processing.preprocessing import (get_features,
+                                                  get_feature_types,
+                                                  create_preprocessor,
+                                                  load_and_prepare_data)
+except ImportError:
+    pass
 
-
-########## Preprocessing Functions (moved to preprocessing.py) #######
-
-# exclude dependent variable
-def get_features(df, target_column="NObeyesdad"):
-    """Drop target column for unsupervised learning."""
-    return df.drop(columns=[target_column])
-
-# categorize variables
-def get_feature_types():
-    """Return numerical and categorical feature lists."""
-    numerical_features = [
-        "Age", "Height", "Weight", "FCVC", "NCP",
-        "CH2O", "FAF", "TUE"
-    ]
-
-    categorical_features = [
-        "Gender", "CALC", "FAVC", "SCC", "SMOKE",
-        "family_history_with_overweight", "CAEC", "MTRANS"
-    ]
-
-    return numerical_features, categorical_features
-
-
-# preprocess 
-def create_preprocessor(numerical_features, categorical_features):
-    """Scaling + one-hot encoding."""
-    return ColumnTransformer(
-        transformers=[
-            ("num", StandardScaler(), numerical_features),
-            ("cat", OneHotEncoder(drop="first"), categorical_features)
-        ]
-    )
-    
-    
-    
 ################ Train Data #############
 
 # train the model
@@ -76,11 +48,9 @@ def plot_explained_variance(pca):
     plt.show()
 
 
-
 ########### Visualizations and Evaluation ##########
 
 # 2 dimensional pca vis
-
 def plot_pca_2d(X_pca):
     """2D PCA scatter plot."""
     plt.figure(figsize=(8, 6))
@@ -119,43 +89,42 @@ def get_pca_loadings(pca, feature_names, n_components=2):
     return loadings
 
 
+####### Guarded Run Block ########
+if __name__ == "__main__":
+    # Corrected relative path for direct script execution
+    DATA_FILE = "../../../Data/unsupervised_ObesityDataSet_raw_and_data_sinthetic.csv"
+    
+    try:
+        df = pd.read_csv(DATA_FILE)
+        
+        # Prepare features
+        X = get_features(df)
+        num_features, cat_features = get_feature_types()
 
-####### Run the data ########
+        # Preprocessing
+        preprocessor = create_preprocessor(num_features, cat_features)
+        X_processed = preprocessor.fit_transform(X)
 
-# load in data
-df = pd.read_csv("unsupervised_ObesityDataSet_raw_and_data_sinthetic.csv")
+        # Train PCA
+        pca, X_pca = train_pca(X_processed)
 
-# preprocessing
-# Prepare features
-X = get_features(df)
+        # Visualizations
+        plot_explained_variance(pca)
 
-# Feature types
-num_features, cat_features = get_feature_types()
+        # PCA feature loadings
+        feature_names = (
+            num_features +
+            list(preprocessor.named_transformers_["cat"].get_feature_names_out(cat_features))
+        )
 
-# Preprocessing
-preprocessor = create_preprocessor(num_features, cat_features)
-X_processed = preprocessor.fit_transform(X)
+        loadings = get_pca_loadings(pca, feature_names)
+        print("\nTop 10 Loadings for PC1:")
+        print(loadings.sort_values("PC1", key=abs, ascending=False).head(10))
 
-
-# Train PCA
-pca, X_pca = train_pca(X_processed)
-
-
-# Visualizations
-plot_explained_variance(pca)
-
-# PCA feature loadings
-feature_names = (
-    num_features +
-    list(preprocessor.named_transformers_["cat"].get_feature_names_out(cat_features))
-)
-
-loadings = get_pca_loadings(pca, feature_names)
-print(loadings.sort_values("PC1", key=abs, ascending=False).head(10))
-
-plot_pca_2d(X_pca)
-
-# interpretation with labels...somewhat supervised but interesting to note
-plot_pca_by_label(X_pca, df["NObeyesdad"])
+        plot_pca_2d(X_pca)
+        plot_pca_by_label(X_pca, df["NObeyesdad"])
+        
+    except FileNotFoundError:
+        print(f"Could not find data file at {DATA_FILE} for local test.")
 
 

@@ -141,18 +141,29 @@ def plot_top_coefficients(model, preprocessor, top_n=15):
 
 ######### run code
 
-df = pd.read_csv("adult.csv")
-X, y, preprocessor = preprocess_data(df)
+if __name__ == "__main__":
+    
+    # 1. Load Data
+    # Path is now fixed to be relative to the notebook's CWD
+    df = pd.read_csv("../../../Data/adult.csv")
+    
+    # 2. Preprocess
+    # Assuming preprocess_data is available globally
+    X, y, preprocessor = preprocess_data(df)
 
-model, X_train, X_test, y_train, y_test = train_model(
-    X, y, preprocessor
-)
+    # 3. Train Model
+    # Assuming train_model is available globally
+    model, X_train, X_test, y_train, y_test = train_model(
+        X, y, preprocessor
+    )
+    
+    # 4. Evaluate Model (THIS LINE MUST BE INSIDE THE GUARD)
+    y_pred, y_prob = evaluate_model(model, X_test, y_test)
 
-y_pred, y_prob = evaluate_model(model, X_test, y_test)
-
-plot_confusion_matrix(y_test, y_pred)
-plot_roc_curve(y_test, y_prob)
-plot_top_coefficients(model, preprocessor)
+    # 5. Visualize (THESE LINES MUST ALSO BE INSIDE THE GUARD)
+    plot_confusion_matrix(y_test, y_pred)
+    plot_roc_curve(y_test, y_prob)
+    plot_top_coefficients(model, preprocessor)
 
 
 
