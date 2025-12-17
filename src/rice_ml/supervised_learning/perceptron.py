@@ -16,55 +16,56 @@ from sklearn.metrics import ( accuracy_score, precision_score, recall_score,
     f1_score, confusion_matrix, classification_report)
 from sklearn.decomposition import PCA
 
+# Assuming these functions are available via import from the package runner script
+# (e.g., from rice_ml.processing.preprocessing)
+# We need to import them here since they are used by the run block and other functions below.
+# Note: These lines assume load_and_prepare_data and build_preprocessor_perceptron are defined 
+# elsewhere (i.e., in preprocessing.py) and available globally via the package import structure.
+# If they are NOT in preprocessing.py, you need to add the imports here.
 
 ######################## functions to be used #####################
-
-# function to load and clean data 
-def load_and_prepare_data(file_path):
-    df = pd.read_csv(file_path)
-
-    # Clean whitespace
-    df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
-
-    # Encode target variable
-    df["income"] = df["income"].map({"<=50K": 0, ">50K": 1})
-
-    return df
-
-
-# function for preprocessing
-def build_preprocessor_perceptron():
-    numeric_features = [
-        "age", "fnlwgt", "educational-num",
-        "capital-gain", "capital-loss", "hours-per-week"
-    ]
-
-    categorical_features = [
-        "workclass", "education", "marital-status",
-        "occupation", "relationship", "race",
-        "gender", "native-country"
-    ]
-
-    preprocessor = ColumnTransformer(
-        transformers=[
-            ("num", StandardScaler(), numeric_features),
-            ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_features)
-        ]
-    )
-
-    return preprocessor
-
+# NOTE: The load_and_prepare_data and build_preprocessor_perceptron functions
+# are typically defined in rice_ml.processing.preprocessing.
+# We REMOVE them here to avoid duplication/confusion with the notebook's import.
 
 # function to train the perceptron algorithm
 def train_perceptron(df):
     X = df.drop(columns=["income"])
     y = df["income"]
 
+    # This requires build_preprocessor_perceptron to be defined or imported. 
+    # Since it was defined above in your old file, we assume it's now imported or globally accessible.
+    # For safety, we rely on the notebook's import for build_preprocessor_perceptron.
+    # If the function is not imported into this file's namespace, it will fail.
+    # To fix this, we import it locally:
+    # from rice_ml.processing.preprocessing import build_preprocessor_perceptron 
+    
+    # We will assume that the function you had defined locally is the required implementation:
+    def build_preprocessor_perceptron():
+        numeric_features = [
+            "age", "fnlwgt", "educational-num",
+            "capital-gain", "capital-loss", "hours-per-week"
+        ]
+
+        categorical_features = [
+            "workclass", "education", "marital-status",
+            "occupation", "relationship", "race",
+            "gender", "native-country"
+        ]
+
+        preprocessor = ColumnTransformer(
+            transformers=[
+                ("num", StandardScaler(), numeric_features),
+                ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_features)
+            ]
+        )
+        return preprocessor
+        
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42, stratify=y
     )
 
-    preprocessor = build_preprocessor_perceptron()
+    preprocessor = build_preprocessor_perceptron() # Use the locally defined one
 
     model = Perceptron(
         max_iter=1000,
@@ -98,20 +99,6 @@ def evaluate_model(model, X_test, y_test):
     print(classification_report(y_test, y_pred))
 
 
-############### Actually run it ########################
-
-# upload the file from csv format
-# this is designed for google notebook (w extra library)
-uploaded = files.upload()
-
-data = load_and_prepare_data("adult.csv")
-
-# actually run all the things
-df = load_and_prepare_data("adult.csv")
-model, X_test, y_test = train_perceptron(df)
-evaluate_model(model, X_test, y_test)
-
-
 ############### Visualization ####################
 def plot_decision_boundary(model, X, y):
     # Transform features
@@ -132,8 +119,6 @@ def plot_decision_boundary(model, X, y):
     plt.colorbar(label="Predicted Income Class")
     plt.show()
 
-plot_decision_boundary(model, X_test, y_test)
-
 
 # confusion matrix heat map
 def plot_confusion_matrix(model, X_test, y_test):
@@ -146,3 +131,31 @@ def plot_confusion_matrix(model, X_test, y_test):
     plt.ylabel("Actual")
     plt.title("Perceptron Confusion Matrix")
     plt.show()
+
+
+
+############### Actually run it (Guarded and Corrected) ########################
+if __name__ == "__main__":
+    # FIX 1: Corrected relative path for execution from notebook's CWD
+    DATA_FILE = "../../../Data/adult.csv" 
+    
+    # FIX 2: Assuming load_and_prepare_data is available via your package's __init__.py chain,
+    # or you need to import it here if the __init__.py chain is broken.
+    # For safety, we will locally import the necessary component for the run block:
+    try:
+        from rice_ml.processing.preprocessing import load_and_prepare_data
+    except ImportError:
+        print("Warning: load_and_prepare_data not found via module import. Skipping run code block.")
+        exit()
+    
+    # upload the file from csv format
+    # Removed: uploaded = files.upload() (Google Colab code)
+
+    # actually run all the things
+    df = load_and_prepare_data(DATA_FILE)
+    model, X_test, y_test = train_perceptron(df)
+    evaluate_model(model, X_test, y_test)
+    
+    # run visualizations
+    plot_decision_boundary(model, X_test, y_test)
+    plot_confusion_matrix(model, X_test, y_test)

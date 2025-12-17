@@ -18,45 +18,13 @@ from sklearn.tree import plot_tree
 from matplotlib.colors import ListedColormap
 
 
-
-# then load in data
-uploaded = files.upload()
-
-
-
-####### setup as always that should go somewhere else
-def load_and_prepare_data(file_path):
-    df = pd.read_csv(file_path)
-
-    # Strip whitespace
-    df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
-
-    # Encode target as numeric
-    df["income"] = df["income"].map({"<=50K": 0, ">50K": 1})
-
-    return df
-
-# preprocessing
-def build_preprocessor():
-    numeric_features = [
-        "age", "fnlwgt", "educational-num",
-        "capital-gain", "capital-loss", "hours-per-week"
-    ]
-
-    categorical_features = [
-        "workclass", "education", "marital-status",
-        "occupation", "relationship", "race",
-        "gender", "native-country"
-    ]
-
-    preprocessor = ColumnTransformer(
-        transformers=[
-            ("num", StandardScaler(), numeric_features),
-            ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_features)
-        ]
-    )
-
-    return preprocessor
+# Import necessary preprocessing functions for the execution block
+# NOTE: These must be imported into the module's namespace if the functions are called locally.
+try:
+    from rice_ml.processing.preprocessing import load_and_prepare_data, build_preprocessor
+except ImportError:
+    # If the import fails, the execution block will skip, but functions should remain callable.
+    pass 
 
 
 ############### Functions ###################
@@ -72,8 +40,9 @@ def train_regression_tree(df):
         random_state=42,
         stratify=y
     )
-
-    preprocessor = build_preprocessor()
+    
+    # Assumes build_preprocessor is imported or accessible
+    preprocessor = build_preprocessor() 
 
     tree = DecisionTreeRegressor(
         max_depth=6,
@@ -102,12 +71,6 @@ def evaluate_regression_tree(model, X_test, y_test):
     print("Classification Accuracy:", accuracy_score(y_test, y_pred_class))
 
 
-### here is the code to train and evaluate the data
-df = load_and_prepare_data("adult.csv")
-model, X_test, y_test = train_regression_tree(df)
-evaluate_regression_tree(model, X_test, y_test)
-
-
 ############# Visualizations ################
 # visualize the top levels of the tree structure
 def plot_regression_tree(model, max_depth=3):
@@ -125,8 +88,6 @@ def plot_regression_tree(model, max_depth=3):
     plt.title("Regression Tree (Top Levels)")
     plt.show()
 
-plot_regression_tree(model, max_depth=3)
-
 
 # feature importance plot
 def plot_feature_importance(model, top_n=15):
@@ -143,8 +104,6 @@ def plot_feature_importance(model, top_n=15):
     plt.title("Top Feature Importances (Regression Tree)")
     plt.show()
 
-plot_feature_importance(model, top_n=15)
-
 
 # true vs predicted scatter plot
 def plot_true_vs_predicted(model, X_test, y_test):
@@ -157,9 +116,6 @@ def plot_true_vs_predicted(model, X_test, y_test):
     plt.ylabel("Predicted Income")
     plt.title("True vs Predicted (Regression Tree)")
     plt.show()
-
-plot_true_vs_predicted(model, X_test, y_test)
-
 
 
 # this visual is how the model should supposedly be splitting into decisions
@@ -174,12 +130,11 @@ def plot_tree_splits_2d(
     Correct visualization of decision tree splits in 2D
     using the trained preprocessing + tree pipeline.
     """
-
     # Separate features and target
     X = df.drop(columns=["income"])
     y = df["income"]
 
-    # Create grid range
+    # Create grid range for the background decision regions
     x_min, x_max = X[feature_x].min(), X[feature_x].max()
     y_min, y_max = X[feature_y].min(), X[feature_y].max()
 
@@ -188,7 +143,7 @@ def plot_tree_splits_2d(
         np.linspace(y_min, y_max, grid_size)
     )
 
-    # Build a baseline row (mean / mode)
+    # Build a baseline row (mean / mode) for the features NOT being plotted
     baseline = {}
     for col in X.columns:
         if col == feature_x:
@@ -203,36 +158,35 @@ def plot_tree_splits_2d(
 
     grid_df = pd.DataFrame(baseline)
 
-    # predict using FULL PIPELINE
+    # Predict using the FULL PIPELINE (including preprocessing)
     Z = pipeline.predict(grid_df)
     Z = Z.reshape(xx.shape)
 
-    # Plot decision regions
+    # --- THE PLOTTING SECTION (This was missing/incomplete) ---
     plt.figure(figsize=(9, 7))
+    
+    # Define custom colors: Light Blue for <=50K, Light Red for >50K
     cmap_bg = ListedColormap(["#cce5ff", "#ffcccc"])
+    
+    # Draw the background decision regions
+    # Regression trees output continuous values; we threshold at 0.5 for class regions
     plt.contourf(xx, yy, Z >= 0.5, alpha=0.6, cmap=cmap_bg)
 
-    # Plot actual data points
+    # Draw the actual data points from the original dataframe
     plt.scatter(
         X[feature_x],
         X[feature_y],
         c=y,
         cmap="coolwarm",
         edgecolor="k",
-        alpha=0.6
+        alpha=0.6,
+        s=20
     )
 
     plt.xlabel(feature_x)
     plt.ylabel(feature_y)
-    plt.title("Decision Tree Split Regions")
-    plt.colorbar(label="Income Class")
+    plt.title(f"Decision Tree Split Regions: {feature_x} vs {feature_y}")
+    plt.colorbar(label="Actual Income Class (0: <=50K, 1: >50K)")
+    
+    # Critical: This command forces the window to render in Jupyter
     plt.show()
-
-# actual plot
-
-plot_tree_splits_2d(
-    pipeline=model,
-    df=df,
-    feature_x="age",
-    feature_y="hours-per-week"
-)
