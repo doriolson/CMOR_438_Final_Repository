@@ -18,6 +18,7 @@ This directory contains examples of common supervised learning algorithms for bo
 ## Data
 
 The supervised learning algorithms use the adult income dataset. This dataset contains 48,842 observations of 15 variables. More information can be found in the data folder. The variables in the data are: 
+
  - `age`: age of the person in years
  - `workclass`: what type of employment (private, government, self-employed, etc)
  - `fnlwgt`: final weight, a scaling factor to know how much weight that observation (or person's data) carries
