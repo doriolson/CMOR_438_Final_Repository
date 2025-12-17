@@ -8,9 +8,9 @@ This folder contains the datasets used throughout this repository for both super
 
 **File:** `Income_Dataset.csv`  
 
-The Income Dataset provides demographic and socioeconomic information for a large set of individuals. Each observation includes features such as age, education, gender, marital status, occupation, work hours, and capital gains or losses. The dataset also contains the target variable `income`, which indicates whether an individual earns above or below a specified threshold (e.g., \$50K annually).
+The Income Dataset provides demographic and socioeconomic information for a large set of individuals. Each observation includes features such as age, education, gender, marital status, occupation, work hours, and capital gains or losses. The dataset contains the target variable `income`, which indicates whether an individual earns above or below a specified threshold ($50K annually). This income variable, once converted to a binary metric, is the variable that the machine learning algorithms in this folder are aiming to predict. 
 
-This dataset is ideal for supervised learning because it combines **numeric and categorical features**, allowing exploration of encoding strategies, feature scaling, and model evaluation techniques. It can be used for classification tasks, regression approximations, and testing the interpretability of models such as decision trees, ensemble methods, linear regression, logistic regression, and neural network-based approaches.  
+This dataset is ideal for supervised learning because it combines **numeric and categorical features**, allowing exploration of encoding strategies, feature scaling, and model evaluation techniques. It can be used for classification tasks, regression approximation, and testing the interpretability of models such as decision trees, ensemble methods, linear regression, logistic regression, and neural network-based approaches.  
 
 **Variable Definitions:**
 
@@ -19,9 +19,16 @@ This dataset is ideal for supervised learning because it combines **numeric and 
 - `education`, `educational-num`: Education level in categories and numeric encoding.  
 - `hours-per-week`: Number of hours worked per week.  
 - `capital-gain`, `capital-loss`: Financial gain or loss from investment activities.  
-- `income`: Target variable indicating income level.  
+- `relationship`: status of the individual within their family (husband, unmarried, own)
+- `race`, `gender`: categorical descriptors of the race and gender of the individual.
+- `native-country`: country of origin.
+- `fnlwgt`: scaling factor that accounts for the number of people represented by each observation. 
+- `income`: Target variable indicating income level. 
+
 
 The dataset has been preprocessed to handle categorical encoding, and it contains no missing values, making it straightforward for modeling and evaluation.
+
+The link to this dataset on kaggle can be found here: https://www.kaggle.com/datasets/wenruliu/adult-income-dataset. 
 
 ---
 
@@ -35,7 +42,7 @@ This dataset is particularly well-suited for unsupervised learning techniques be
 
 **Variable Definitions:**
 
-- `Age`, `Height`, `Weight`: Basic demographic and physical measurements.  
+- `Gender`, `Age`, `Height`, `Weight`: Basic demographic and physical measurements.  
 - `FCVC`: Frequency of vegetable consumption.  
 - `NCP`: Number of main meals per day.  
 - `CH2O`: Daily water consumption in liters.  
@@ -48,6 +55,8 @@ This dataset is particularly well-suited for unsupervised learning techniques be
 - `NObeyesdad`: Obesity classification (used only for evaluation).  
 
 The dataset contains no missing values and provides a moderate number of observations (2,111) and features (17), making it suitable for clustering and community detection experiments.
+
+The link to this dataset on kaggle can be found here: https://www.kaggle.com/datasets/lesumitkumarroy/obesity-data-set. 
 
 ---
 
