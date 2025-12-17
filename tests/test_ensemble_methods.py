@@ -10,8 +10,8 @@ from __future__ import annotations
 from typing import Optional, Sequence, Union, Tuple, List, Callable, Literal, Dict
 
 import numpy as np
-from ..processing.preprocessing import train_test_split # Reusing custom split
-from .decision_trees import DecisionTreeClassifier # Using the custom DT
+from rice_ml.processing.preprocessing import train_test_split # Reusing custom split
+from rice_ml.supervised_learning.decision_trees import DecisionTreeClassifier # Using the custom DT
 
 __all__ = [
     'RandomForestClassifier',
@@ -68,7 +68,7 @@ class RandomForestClassifier:
         n_estimators: int = 100,
         max_depth: Optional[int] = None,
         min_samples_split: int = 2,
-        max_features: Union[str, float, int] = "sqrt", # 'sqrt', 'log2', or float (0.0, 1.0]
+        max_features: Union[str, float] = "sqrt", # 'sqrt', 'log2', or float (0.0, 1.0]
         bootstrap: bool = True,
         random_state: Optional[int] = None,
         criterion: Literal["gini", "entropy"] = "gini",
@@ -96,8 +96,6 @@ class RandomForestClassifier:
 
     def _get_max_features(self, n_features: int) -> int:
         """Calculate the number of features to sample based on max_features parameter."""
-        
-        # Check for string arguments ('sqrt', 'log2')
         if isinstance(self.max_features, str):
             if self.max_features == "sqrt":
                 return max(1, int(np.sqrt(n_features)))
@@ -105,24 +103,13 @@ class RandomForestClassifier:
                 return max(1, int(np.log2(n_features)))
             else:
                 raise ValueError(f"Unknown max_features string: {self.max_features}")
-                
-        # Check for integer arguments (absolute number of features)
-        elif isinstance(self.max_features, int): # <-- NEW BLOCK ADDED HERE
-            if 0 < self.max_features <= n_features:
-                return self.max_features
-            else:
-                raise ValueError(f"max_features integer must be in (0, {n_features}].")
-
-        # Check for float arguments (fraction of features)
         elif isinstance(self.max_features, (float, np.floating)):
             if 0.0 < self.max_features <= 1.0:
                 return max(1, int(self.max_features * n_features))
             else:
                 raise ValueError("max_features float must be in (0.0, 1.0].")
-                
         else:
-            # Fallback error message (should now rarely be reached)
-            raise TypeError("max_features must be 'sqrt', 'log2', a float in (0.0, 1.0], or a positive integer.")
+            raise TypeError("max_features must be 'sqrt', 'log2', or a float in (0.0, 1.0].")
 
 
     def fit(self, X: ArrayLike, y: ArrayLike) -> "RandomForestClassifier":
